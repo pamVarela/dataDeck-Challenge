@@ -1,9 +1,8 @@
 package controllers
 
 import (
-	"log"
 	"testDataDeck/models"
-	
+
 	"github.com/gin-gonic/gin"
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -17,30 +16,51 @@ func Cors() gin.HandlerFunc {
 
 func GetSong(c *gin.Context) {
 	
-	var songs []*models.Songs
-	rows, err := db.Query("SELECT * FROM songs order by ID")
-	log.Println("HERE")
-	if err != nil {
-		log.Fatal(err)
-	}
+	initDB := GetConnectionDB()
 
-	defer rows.Close()
+	parameter := c.Params.ByName("params")
 
-	for rows.Next() {
-		
-		var song = new(models.Songs)
-		rows.Scan(&song.Id, &song.Artist, &song.Song, &song.Genre, &song.Length)
-		songs = append(songs, song)
-		if err != nil {
-			c.JSON(200, songs)
-		} else {
-			c.JSON(404, gin.H{"error": "Song not found"})
+	var listSongs []models.Songs
+
+	query := `SELECT s.song, s.artist, g.name, s.length FROM songs AS s JOIN genres AS g ON g.id = s.genre WHERE `
+
+	rowsArtists, _ := initDB.Query(query + `s.artist = ?`, parameter)
+	rowsSongs, _  := initDB.Query(query + `s.song = ?`, parameter)
+	rowsGenres, _ := initDB.Query(query + `g.name = ?`, parameter)
+
+	if rowsArtists != nil{
+		for rowsArtists.Next() {
+			var res models.Songs
+			rowsArtists.Scan(&res.Song, &res.Artist, &res.Genre, &res.Length)
+			listSongs = append(listSongs, res)
 		}
-
 	}
 
+	if rowsSongs != nil{
+		for rowsSongs.Next() {
+			var res models.Songs
+			rowsSongs.Scan(&res.Song, &res.Artist, &res.Genre, &res.Length)
+			listSongs = append(listSongs, res)
+		}
+	}
+
+	if rowsGenres != nil{
+		for rowsGenres.Next() {
+			var res models.Songs
+			rowsGenres.Scan(&res.Song, &res.Artist, &res.Genre, &res.Length)
+			listSongs = append(listSongs, res)
+		}
+	}
+
+	defer rowsArtists.Close()
+
+	if listSongs != nil {
+		c.JSON(200, listSongs)
+	} else {
+		c.JSON(404, gin.H{"error": "Songs not found"})
+	}
 }
 
 func GetGenres(c *gin.Context) {
+	
 }
-

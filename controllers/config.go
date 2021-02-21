@@ -1,9 +1,9 @@
 package controllers
 
 import (
-	"database/sql"
 	"log"
-	
+	"database/sql"
+
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -16,12 +16,12 @@ func GetConnectionDB() *sql.DB {
 		return db
 	}
 
-	var err error
-
 	db, err := sql.Open("sqlite3", "./jrdd.db")
+	
 	if err != nil {
-		log.Println(err)
+		log.Println("Failed to connect to DB...")
 	}
+
 	return db
 }
 
