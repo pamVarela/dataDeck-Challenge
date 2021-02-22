@@ -1,6 +1,6 @@
 package models
 
-type Songs struct {
+type Song struct {
 	ID     int    `json:"id"`
 	Artist string `json:"artist"`
 	Song   string `json:"song"`   
