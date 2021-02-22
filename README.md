@@ -10,7 +10,7 @@ This is a test API implemented with Gin framework for Golang
 
                 go run main.go
                 
-3.For the unit testing it have enter with the following command:
+3. For the unit testing it have enter with the following command:
       
                 go test -v ./tests
                 
