@@ -1,19 +1,11 @@
 package main
 
 import (
-	"testDataDeck/mappings"
-	_ "testDataDeck/mappings"
-
-	"github.com/gin-gonic/gin"
-
+	"testDataDeck/routes"
 )
 
 func main() {
-	
-	Router := gin.Default();
-	
-	mappings.UrlFunctions(Router)
-	
-	Router.Run()
-
+	router := routes.UrlFunctions()
+	router.Run()
 }
+
